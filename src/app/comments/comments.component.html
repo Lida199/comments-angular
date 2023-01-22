@@ -1,0 +1,119 @@
+<div class="container">
+    <div class="all-comments">
+        <div class="comment wrapper" *ngFor="let comment of currentData.comments; let x = index" id="comment-{{x+1}}" [ngClass]="changingOrder(comment.user.username)">
+            <div class="main-comment">
+                <div class="votes">
+                    <img src="../../assets/images/icon-plus.svg" alt="plus-icon" class="plus-icon" id="plus1" (click)="increaseVotes(comment.user.username, x, undefined)">
+                    <span class="amount">{{comment.score}}</span>
+                    <img src="../../assets/images/icon-minus.svg" alt="minus-icon" class="minus-icon" id="minus1" (click)="decreaseVotes(comment.user.username, x, undefined)">
+                </div>
+                <div class="main-content">
+                    <div class="personal-details" *ngIf="comment.user.username !== currentData.currentUser.username">
+                        <div class="details">
+                            <img alt="person-avatar" src="../../assets/{{comment.user.image.png}}">
+                            <span class="username">{{comment.user.username}}</span>
+                            <span class="time">{{comment.createdAt}}</span>
+                        </div>
+                        <div class="reply-icon" (click)="replying($event)">
+                            <img src="../../assets/images/icon-reply.svg" alt="reply-icon">
+                            <span class="reply-text">Reply</span>
+                        </div>
+                    </div>
+                    <div class="personal-details" *ngIf="comment.user.username === currentData.currentUser.username">
+                        <div class="my-reply-details">
+                            <img  alt="person-avatar" src="../../assets/{{comment.user.image.png}}">
+                            <span class="reply-username username">{{comment.user.username}}</span>
+                            <span class="me">you</span>
+                            <span class="time" *ngIf="comment.createdAt">{{comment.createdAt}}</span>
+                            <span class="time" *ngIf="!comment.createdAt">{{timeSince(comment.exactTime)}}</span>
+                        </div>
+                        <div class="edit-and-delete">
+                            <div class="delete-reply" (click)="chooseOption(x, undefined)">
+                                <img src="../../assets/images/icon-delete.svg" alt="delete-icon">
+                                <span>Delete</span>
+                            </div>
+                            <div class="edit-reply" (click)="showArea($event)">
+                                <img src="../../assets/images/icon-edit.svg" alt="edit-icon">
+                                <span>Edit</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="update1" *ngIf="comment.user.username === currentData.currentUser.username">
+                        <textarea autofocus="true">{{comment.content}}</textarea>
+                        <button (click)="updateContent($event, x, undefined)">UPDATE</button>
+                    </div>
+                    <div class="comment-body">{{comment.content}}</div>
+                </div>
+            </div> 
+            <div class="replies wrapper" *ngIf=" comment.replies && comment.replies.length >= 0">
+                <div class="new-reply hidden" *ngIf="comment.user.username === 'amyrobson'">
+                    <img src="../../assets/images/avatars/image-juliusomo.png" alt="my-icon">
+                    <textarea class="reply-content-1" name="textArea" placeholder="Add a comment..."></textarea>
+                    <button class="reply-btn" (click)="replyingToAll($event, x)">REPLY</button>
+                </div> 
+                <div class="reply-container" *ngFor="let reply of comment.replies; let i = index">
+                    <div class="reply">
+                        <div class="votes">
+                            <img src="../../assets/images/icon-plus.svg" alt="plus-icon" class="plus-icon" (click)="increaseVotes(reply.user.username, x, i)">
+                            <span class="amount">{{reply.score}}</span>
+                            <img src="../../assets/images/icon-minus.svg" alt="minus-icon" class="minus-icon" (click)="decreaseVotes(reply.user.username, x, i)">
+                        </div>
+                        <div class="main-content">
+                            <div class="personal-details" *ngIf="reply.user.username !== currentData.currentUser.username">
+                                <div class="details">
+                                    <img alt="person-avatar" src="../../assets/{{reply.user.image.png}}">
+                                    <span class="reply-username username">{{reply.user.username}}</span>
+                                    <span class="time">{{reply.createdAt}}</span>
+                                </div>
+                                <div class="reply-icon" (click)="replying($event)">
+                                    <img src="../../assets/images/icon-reply.svg" alt="reply-icon">
+                                    <span class="reply-text">Reply</span>
+                                </div>
+                            </div>
+                            <div class="my-reply-personal-details" *ngIf="reply.user.username === currentData.currentUser.username">
+                                <div class="my-reply-details">
+                                    <img  alt="person-avatar" src="../../assets/{{reply.user.image.png}}">
+                                    <span class="reply-username username">{{reply.user.username}}</span>
+                                    <span class="me">you</span>
+                                    <span class="time" *ngIf="reply.createdAt">{{reply.createdAt}}</span>
+                                    <span class="time" *ngIf="!reply.createdAt">{{timeSince(reply.exactTime)}}</span>
+                                </div>
+                                <div class="edit-and-delete">
+                                    <div class="delete-reply" (click)="chooseOption(x, i)">
+                                        <img src="../../assets/images/icon-delete.svg" alt="delete-icon">
+                                        <span>Delete</span>
+                                    </div>
+                                    <div class="edit-reply" (click)="showArea($event)">
+                                        <img src="../../assets/images/icon-edit.svg" alt="edit-icon">
+                                        <span>Edit</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="reply-body comment-body">
+                                <span class="replying-to">@{{reply.replyingTo}} </span>{{reply.content}}
+                            </div>
+                            <div class="update1" *ngIf="reply.user.username === currentData.currentUser.username">
+                                <textarea autofocus="true">@{{reply.replyingTo}} {{reply.content}}</textarea>
+                                <button (click)="updateContent($event, x, i)">UPDATE</button>
+                            </div>
+                        </div>      
+                    </div>
+                    <div class="new-reply hidden" *ngIf="reply.user.username === 'ramsesmiron'">
+                        <img src="../../assets/images/avatars/image-juliusomo.png" alt="my-icon">
+                        <textarea class="reply-content-1" name="textArea" placeholder="Add a comment..."></textarea>
+                        <button class="reply-btn" (click)="replyingToAll($event, x)">REPLY</button>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="overlay" [ngClass]="{'active': showModal}"></div>
+<div class="modal" [ngClass]="{'active': showModal}">
+    <h3>Delete comment</h3>
+    <p>Are you sure you want to delete this comment? This will remove the comment and can't be undone.</p>
+    <div class="buttons">
+        <button id="cancel" (click)="cancelOption()">NO, CANCEL</button>
+        <button id="proceed" (click)="deleteOption()">YES, DELETE</button>
+    </div>
+</div>

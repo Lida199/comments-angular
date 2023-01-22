@@ -1,0 +1,7 @@
+<div class="contain">
+    <div class="type-new-comment" [ngClass]="{'active': stateOfTextarea}">
+        <img src="../../assets/images/avatars/image-juliusomo.png" alt="my-icon">
+        <textarea class="type-here" name="type" id="type" placeholder="Add a comment..." [(ngModel)]="commentContent"></textarea>
+        <button class="send-btn" (click)="sendInfo(commentContent)">SEND</button>
+    </div>
+</div>
